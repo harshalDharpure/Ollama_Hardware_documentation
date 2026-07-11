@@ -1,0 +1,17 @@
+ollama:
+  base_url: "http://localhost:11434"
+  text_model: "qwen2.5:7b"
+  vision_model: "llava:13b"
+  timeout: 300
+
+diagram:
+  yolo_weights: null  # null = heuristic fallback; path to custom .pt if available
+  min_dpi: 150
+  dense_symbol_threshold: 40
+  agentic_max_steps: 8
+
+agents:
+  auditor_max_retries: 2
+
+output:
+  work_dir: "data/output"

@@ -1,0 +1,125 @@
+# RISC-V RV32I Processor Specification (Sample)
+
+## 1. Introduction
+
+This document describes a simplified RISC-V RV32I single-cycle processor implementation
+for educational and verification purposes. The design follows the RISC-V User-Level ISA
+specification and implements the base integer instruction set.
+
+## 2. Architecture Overview
+
+The processor consists of five major functional blocks connected via internal buses:
+
+- Register File: 32 general-purpose registers (x0-x31) plus program counter
+- Instruction Decoder: Decodes 32-bit instructions into control signals
+- ALU: Arithmetic and logic operations
+- Control Unit: Generates control signals for datapath components
+- Memory Interface: Handles instruction fetch and data load/store
+
+Figure 1 shows the top-level block diagram of the datapath.
+
+### 2.1 Register File
+
+The RegisterFile module stores 32 x 32-bit general-purpose registers.
+Register x0 is hardwired to zero.
+
+Inputs:
+- read_addr1 (5-bit): First read port address
+- read_addr2 (5-bit): Second read port address
+- write_addr (5-bit): Write port address
+- write_data (32-bit): Data to write
+- write_enable (1-bit): Write enable signal
+- clk (1-bit): Clock signal
+
+Outputs:
+- read_data1 (32-bit): First read port data
+- read_data2 (32-bit): Second read port data
+
+### 2.2 Instruction Decoder
+
+The InstructionDecoder decodes incoming 32-bit instructions into:
+- opcode, funct3, funct7 fields
+- register addresses rs1, rs2, rd
+- immediate value (I-type, S-type, B-type, U-type, J-type)
+
+Inputs:
+- instruction (32-bit): Raw instruction word
+
+Outputs:
+- opcode (7-bit)
+- rs1 (5-bit), rs2 (5-bit), rd (5-bit)
+- immediate (32-bit)
+- instr_type (3-bit): Encoded instruction format
+
+### 2.3 Arithmetic Logic Unit (ALU)
+
+The ALU performs arithmetic and logical operations based on alu_control signals.
+
+Inputs:
+- operand1 (32-bit)
+- operand2 (32-bit)
+- alu_control (4-bit)
+
+Outputs:
+- result (32-bit)
+- zero_flag (1-bit)
+
+Supported operations: ADD, SUB, AND, OR, XOR, SLL, SRL, SLT
+
+### 2.4 Control Unit
+
+The ControlUnit generates control signals based on opcode and funct3/funct7.
+
+Inputs:
+- opcode (7-bit)
+- funct3 (3-bit)
+- funct7 (7-bit)
+
+Outputs:
+- alu_control (4-bit)
+- reg_write (1-bit)
+- mem_read (1-bit)
+- mem_write (1-bit)
+- branch (1-bit)
+- jump (1-bit)
+
+### 2.5 Memory Interface
+
+The MemoryInterface handles instruction memory fetch and data memory access.
+
+Inputs:
+- address (32-bit)
+- write_data (32-bit)
+- mem_write (1-bit)
+- mem_read (1-bit)
+- clk (1-bit)
+
+Outputs:
+- read_data (32-bit)
+- instruction (32-bit)
+
+## 3. Module Dependencies
+
+Implementation order:
+1. RegisterFile (no dependencies)
+2. ALU (no dependencies)
+3. InstructionDecoder (no dependencies)
+4. ControlUnit (depends on InstructionDecoder)
+5. MemoryInterface (depends on ControlUnit)
+6. Top-level integration (depends on all modules)
+
+## 4. Interface Connectivity
+
+- InstructionDecoder outputs rs1, rs2, rd to RegisterFile read/write addresses
+- RegisterFile read_data1, read_data2 feed ALU operand1, operand2
+- ALU result connects to RegisterFile write_data
+- ControlUnit alu_control connects to ALU
+- MemoryInterface instruction connects to InstructionDecoder
+- ControlUnit mem_read, mem_write connect to MemoryInterface
+
+## 5. Constraints
+
+- All registers updated on rising clock edge
+- x0 must always read as zero
+- Address bus width: 32-bit
+- Data bus width: 32-bit

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+*.egg-info/
+.pytest_cache/
+
+# Generated output (re-run pipeline locally)
+data/output/
+
+# Large installers / binaries
+tools/OllamaSetup.exe
+tools/*.exe
+*.zip
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Session uploads (user files)
+data/output/uploads/
