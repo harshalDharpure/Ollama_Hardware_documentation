@@ -23,3 +23,16 @@ Thumbs.db
 
 # Session uploads (user files)
 data/output/uploads/
+
+# Runtime logs
+*.log
+
+# Generated deliverables at repo root (pipeline output)
+/architecture.mmd
+/canonical_spec.json
+/data_flow.mmd
+/dependency_graph.mmd
+/electrical_characteristics.csv
+/extraction_report.json
+/relationships.csv
+/structured_specification.md

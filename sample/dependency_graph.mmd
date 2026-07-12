@@ -1,0 +1,37 @@
+graph TD
+    PWR["Power Control"]
+    VCC["VCC Main Supply"]
+    VBAT["VBAT Backup Supply"]
+    OSC["Integrated Oscillator"]
+    TEMP["Temperature Sensor"]
+    DIV["Control Logic / Divider"]
+    CLOCK["Clock and Calendar Registers"]
+    CTRL["Control, Status and Alarm Registers"]
+    I2C["I2C Interface"]
+    USER["User Buffer"]
+    ALARM["Alarm Evaluation"]
+    OUT["INT/SQW and 32 kHz Output Control"]
+    RESET["Reset Circuit"]
+    HOST["External Host"]
+
+    PWR --> VCC
+    PWR --> VBAT
+    OSC --> PWR
+    TEMP --> PWR
+    I2C --> PWR
+    RESET --> VCC
+
+    DIV --> OSC
+    DIV --> TEMP
+    CLOCK --> DIV
+    ALARM --> CLOCK
+    ALARM --> CTRL
+    OUT --> ALARM
+    OUT --> CTRL
+    OUT --> DIV
+
+    CLOCK --> I2C
+    CTRL --> I2C
+    USER --> I2C
+    I2C --> HOST
+    RESET --> HOST

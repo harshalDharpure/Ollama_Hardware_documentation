@@ -1,0 +1,39 @@
+category,parameter,symbol,conditions,supply,minimum,typical,maximum,maximum_absolute,minimum_expression,maximum_expression,unit,source_pdf_page
+,Supply voltage,VCC,,,2.3,3.3,5.5,,,,V,2
+,Backup supply voltage,VBAT,,,2.3,3.0,5.5,,,,V,2
+,"Logic-1 input, SDA/SCL",VIH,,,,,,,0.7 * VCC,VCC + 0.3,V,2
+,"Logic-0 input, SDA/SCL",VIL,,,-0.3,,,,,0.3 * VCC,V,2
+VCC supply,Active supply current,ICCA,Notes 4 and 5; SCL clocking at 400 kHz,VCC = 3.63 V,,,200,,,,uA,2
+VCC supply,Active supply current,ICCA,Notes 4 and 5; SCL clocking at 400 kHz,VCC = 5.5 V,,,300,,,,uA,2
+VCC supply,Standby supply current,ICCS,I2C bus inactive; 32 kHz output on; SQW output off,VCC = 3.63 V,,,110,,,,uA,2
+VCC supply,Standby supply current,ICCS,I2C bus inactive; 32 kHz output on; SQW output off,VCC = 5.5 V,,,170,,,,uA,2
+VCC supply,Temperature conversion current,ICCSCONV,I2C bus inactive; 32 kHz output on; SQW output off,VCC = 3.63 V,,,575,,,,uA,2
+VCC supply,Temperature conversion current,ICCSCONV,I2C bus inactive; 32 kHz output on; SQW output off,VCC = 5.5 V,,,650,,,,uA,2
+power fail,Power-fail voltage,VPF,,,2.45,2.575,2.7,,,,V,2
+digital output,"Logic-0 output - 32kHz, INT/SQW, SDA",VOL,IOL = 3 mA,,,,0.4,,,,V,2
+digital output,Logic-0 output - RST,VOL,IOL = 1 mA,,,,0.4,,,,V,2
+leakage,"Output leakage current - 32kHz, INT/SQW, SDA",ILO,Output high impedance,,-1,0,1,,,,uA,2
+leakage,Input leakage - SCL,ILI,,,-1,,1,,,,uA,2
+leakage,RST pin I/O leakage,IOL,RST high impedance; Note 6,,-200,,10,,,,uA,2
+leakage,VBAT leakage current with VCC active,IBATLKG,,,,25,100,,,,nA,2
+frequency,Output frequency,fOUT,VCC = 3.3 V or VBAT = 3.3 V,,,32.768,,,,,kHz,3
+frequency,Frequency stability vs temperature - commercial,delta_f/fOUT,VCC or VBAT = 3.3 V; aging offset = 00h; 0 C to +40 C,,,,,2.0,,,ppm,3
+frequency,Frequency stability vs temperature - commercial,delta_f/fOUT,VCC or VBAT = 3.3 V; aging offset = 00h; >+40 C to +70 C,,,,,3.5,,,ppm,3
+frequency,Frequency stability vs temperature - industrial,delta_f/fOUT,VCC or VBAT = 3.3 V; aging offset = 00h; -40 C to <0 C,,,,,3.5,,,ppm,3
+frequency,Frequency stability vs temperature - industrial,delta_f/fOUT,VCC or VBAT = 3.3 V; aging offset = 00h; 0 C to +40 C,,,,,2.0,,,ppm,3
+frequency,Frequency stability vs temperature - industrial,delta_f/fOUT,VCC or VBAT = 3.3 V; aging offset = 00h; >+40 C to +85 C,,,,,3.5,,,ppm,3
+frequency,Frequency stability vs voltage,delta_f/V,,,,1,,,,,ppm/V,3
+frequency,Trim register sensitivity per LSB,delta_f/LSB,-40 C,,,0.7,,,,,ppm,3
+frequency,Trim register sensitivity per LSB,delta_f/LSB,+25 C,,,0.1,,,,,ppm,3
+frequency,Trim register sensitivity per LSB,delta_f/LSB,+70 C,,,0.4,,,,,ppm,3
+frequency,Trim register sensitivity per LSB,delta_f/LSB,+85 C,,,0.8,,,,,ppm,3
+temperature,Temperature accuracy,Temp,VCC = 3.3 V or VBAT = 3.3 V,,-3,,3,,,,C,3
+aging,Crystal aging,delta_f/fO,After reflow; not production tested; first year,,,,,1.0,,,ppm,3
+aging,Crystal aging,delta_f/fO,After reflow; not production tested; 0 to 10 years,,,,,5.0,,,ppm,3
+VBAT supply,Active battery current,IBATA,EOSC=0; BBSQW=0; SCL=400 kHz,VBAT = 3.63 V,,,70,,,,uA,3
+VBAT supply,Active battery current,IBATA,EOSC=0; BBSQW=0; SCL=400 kHz,VBAT = 5.5 V,,,150,,,,uA,3
+VBAT supply,Timekeeping battery current,IBATT,EOSC=0; BBSQW=0; EN32kHz=1; SCL=SDA=0 V or VBAT,VBAT = 3.63 V,,0.84,3.0,,,,uA,3
+VBAT supply,Timekeeping battery current,IBATT,EOSC=0; BBSQW=0; EN32kHz=1; SCL=SDA=0 V or VBAT,VBAT = 5.5 V,,1.0,3.5,,,,uA,3
+VBAT supply,Temperature conversion current,IBATTC,EOSC=0; BBSQW=0; SCL=SDA=0 V or VBAT,VBAT = 3.63 V,,,575,,,,uA,3
+VBAT supply,Temperature conversion current,IBATTC,EOSC=0; BBSQW=0; SCL=SDA=0 V or VBAT,VBAT = 5.5 V,,,650,,,,uA,3
+VBAT supply,Data-retention current,IBATTDR,EOSC=1; SCL=SDA=0 V; +25 C,,,,100,,,,nA,3

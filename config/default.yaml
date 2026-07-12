@@ -1,14 +1,23 @@
 ollama:
   base_url: "http://localhost:11434"
   text_model: "qwen2.5:7b"
-  vision_model: "llava:13b"
-  timeout: 300
+  text_model_fallback: "qwen2.5:7b"
+  vision_model: "llava:7b"
+  vision_model_fallback: "llava:7b"
+  timeout: 600
+
+pipeline:
+  mode: "datasheet"  # datasheet | rtl_spec
+  datasheet_block_pages_only: true
+  omnish_enabled: true
 
 diagram:
-  yolo_weights: null  # null = heuristic fallback; path to custom .pt if available
+  yolo_weights: "models/schematic_yolov8.pt"  # AITEE circuit-schematic YOLOv8 (see models/README.md)
+  yolo_device: "cpu"  # cpu avoids GPU contention with Ollama
   min_dpi: 150
   dense_symbol_threshold: 40
-  agentic_max_steps: 8
+  agentic_max_steps: 4
+  omnish_agent_steps: 6
 
 agents:
   auditor_max_retries: 2

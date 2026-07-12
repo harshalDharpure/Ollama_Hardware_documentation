@@ -2,11 +2,41 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
 import cv2
 import numpy as np
+
+ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_WEIGHTS = ROOT / "models" / "schematic_yolov8.pt"
+FALLBACK_WEIGHTS = ROOT / "models" / "schematic_yolov8_nano.pt"
+
+# Circuit-schematic classes (AITEE / CKnievel/aitee-dataset YOLOv8 weights)
+MIN_CONFIDENCE = 0.55
+MAX_DETECTIONS = 30
+LABEL_NOISE_CLASSES = {
+    "current_label",
+    "current_label_dir",
+    "resistor_label",
+    "voltage_label",
+    "voltage_label_dir",
+}
+
+SCHEMATIC_CLASS_ALIASES = {
+    "E": "edge",
+    "GND": "ground",
+    "I": "current_source",
+    "p": "probe",
+    "R": "resistor",
+    "V": "voltage_source",
+    "ident-i": "current_label",
+    "ident-i-dir": "current_label_dir",
+    "ident-res": "resistor_label",
+    "ident-v": "voltage_label",
+    "ident-v-dir": "voltage_label_dir",
+}
 
 
 @dataclass
@@ -31,37 +61,76 @@ class Detection:
         return self.y2 - self.y1
 
 
-def detect_elements(image_path: str | Path, yolo_weights: str | None = None) -> list[Detection]:
+def resolve_yolo_weights(yolo_weights: str | None = None) -> str | None:
+    """Return path to schematic YOLO weights if available."""
+    if yolo_weights:
+        path = Path(yolo_weights)
+        if not path.is_absolute():
+            path = ROOT / path
+        if path.exists():
+            return str(path)
+
+    if DEFAULT_WEIGHTS.exists():
+        return str(DEFAULT_WEIGHTS.resolve())
+    if FALLBACK_WEIGHTS.exists():
+        return str(FALLBACK_WEIGHTS)
+    return None
+
+
+def detect_elements(
+    image_path: str | Path,
+    yolo_weights: str | None = None,
+    *,
+    max_detections: int = MAX_DETECTIONS,
+) -> list[Detection]:
     path = Path(image_path)
-    if yolo_weights and Path(yolo_weights).exists():
-        return _yolo_detect(path, yolo_weights)
-    return _heuristic_detect(path)
+    resolved = resolve_yolo_weights(yolo_weights)
+    if resolved:
+        detections = _yolo_detect(path, resolved, max_detections=max_detections)
+        if detections:
+            return detections
+    return _heuristic_detect(path, max_detections=max_detections)
 
 
-def _yolo_detect(path: Path, weights: str) -> list[Detection]:
+def _normalize_class_name(name: str) -> str:
+    return SCHEMATIC_CLASS_ALIASES.get(name, name)
+
+
+def _yolo_detect(path: Path, weights: str, *, max_detections: int = MAX_DETECTIONS) -> list[Detection]:
     try:
         from ultralytics import YOLO
 
+        # CPU inference avoids GPU memory contention with Ollama on the same machine.
+        device = os.environ.get("YOLO_DEVICE", "cpu")
         model = YOLO(weights)
-        results = model(str(path), verbose=False)
+        results = model(str(path), verbose=False, device=device)
         detections: list[Detection] = []
         for r in results:
+            if r.boxes is None:
+                continue
             for box in r.boxes:
                 x1, y1, x2, y2 = map(int, box.xyxy[0].tolist())
                 cls_id = int(box.cls[0])
-                name = r.names.get(cls_id, "component")
+                raw_name = r.names.get(cls_id, "component")
+                name = _normalize_class_name(str(raw_name))
                 conf = float(box.conf[0])
+                if conf < MIN_CONFIDENCE:
+                    continue
+                if name in LABEL_NOISE_CLASSES:
+                    continue
+                kind = "junction" if name in {"edge", "probe"} else "component"
                 detections.append(
-                    Detection(class_name=name, x1=x1, y1=y1, x2=x2, y2=y2, confidence=conf)
+                    Detection(class_name=kind if kind == "junction" else name, x1=x1, y1=y1, x2=x2, y2=y2, confidence=conf)
                 )
         if detections:
-            return detections
+            detections.sort(key=lambda d: d.confidence, reverse=True)
+            return detections[:max_detections]
     except Exception:
         pass
-    return _heuristic_detect(path)
+    return _heuristic_detect(path, max_detections=max_detections)
 
 
-def _heuristic_detect(path: Path) -> list[Detection]:
+def _heuristic_detect(path: Path, *, max_detections: int = MAX_DETECTIONS) -> list[Detection]:
     img = cv2.imread(str(path))
     if img is None:
         return []
@@ -70,7 +139,6 @@ def _heuristic_detect(path: Path) -> list[Detection]:
     h, w = gray.shape
     detections: list[Detection] = []
 
-    # Component-like blobs
     _, binary = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     for c in contours:
@@ -84,7 +152,6 @@ def _heuristic_detect(path: Path) -> list[Detection]:
                 Detection(class_name="component", x1=x, y1=y, x2=x + bw, y2=y + bh)
             )
 
-    # Junction detection via line intersections
     edges = cv2.Canny(gray, 50, 150)
     lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=40, minLineLength=20, maxLineGap=8)
     if lines is not None:
@@ -101,7 +168,7 @@ def _heuristic_detect(path: Path) -> list[Detection]:
                 )
             )
 
-    return detections
+    return detections[:max_detections]
 
 
 def _find_junctions(lines: np.ndarray, w: int, h: int, grid: int = 15) -> list[tuple[int, int]]:

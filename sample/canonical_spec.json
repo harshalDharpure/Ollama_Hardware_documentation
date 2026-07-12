@@ -1,0 +1,920 @@
+{
+  "schema_version": "1.0.0",
+  "document": {
+    "device": "DS3231",
+    "manufacturer": "Maxim Integrated",
+    "title": "Extremely Accurate I2C-Integrated RTC/TCXO/Crystal",
+    "document_revision": "19-5170; Rev 10; 3/15",
+    "source_file": "ds3231.pdf",
+    "uploaded_pdf_pages": 6,
+    "printed_datasheet_pages_present": [
+      1,
+      2,
+      3,
+      6,
+      7,
+      8
+    ],
+    "printed_datasheet_pages_missing_from_extract": [
+      4,
+      5
+    ],
+    "document_type": "hardware datasheet extract"
+  },
+  "overview": {
+    "summary": "Low-cost, high-accuracy I2C real-time clock with integrated temperature-compensated crystal oscillator, integrated crystal resonator, backup battery input, alarms, square-wave outputs and reset circuitry.",
+    "package": "16-pin, 300-mil SO",
+    "timekeeping_fields": [
+      "seconds",
+      "minutes",
+      "hours",
+      "day of week",
+      "date",
+      "month",
+      "year"
+    ],
+    "calendar_behavior": [
+      "Automatic adjustment for months with fewer than 31 days",
+      "Leap-year correction valid through 2100",
+      "12-hour mode with AM/PM or 24-hour mode"
+    ],
+    "communication": {
+      "protocol": "I2C",
+      "maximum_clock_frequency_khz": 400,
+      "data_direction": "bidirectional SDA with SCL input"
+    },
+    "applications": [
+      "Servers",
+      "Telematics",
+      "Utility power meters",
+      "GPS"
+    ]
+  },
+  "features": [
+    {
+      "feature": "RTC timekeeping",
+      "details": "Counts seconds through years with leap-year compensation through 2100",
+      "source_pdf_page": 1
+    },
+    {
+      "feature": "Commercial accuracy",
+      "details": "+/-2 ppm from 0 C to +40 C",
+      "source_pdf_page": 1
+    },
+    {
+      "feature": "Industrial accuracy",
+      "details": "+/-3.5 ppm from -40 C to +85 C",
+      "source_pdf_page": 1
+    },
+    {
+      "feature": "Digital temperature sensor",
+      "details": "+/-3 C accuracy",
+      "source_pdf_page": 1
+    },
+    {
+      "feature": "Aging trim register",
+      "details": "Digital frequency trim",
+      "source_pdf_page": 1
+    },
+    {
+      "feature": "Alarms",
+      "details": "Two programmable time-of-day alarms",
+      "source_pdf_page": 1
+    },
+    {
+      "feature": "Square-wave output",
+      "details": "Programmable INT/SQW output and separate 32 kHz output",
+      "source_pdf_page": 1
+    },
+    {
+      "feature": "Battery backup",
+      "details": "Continuous timekeeping when VCC is interrupted",
+      "source_pdf_page": 1
+    },
+    {
+      "feature": "Reset",
+      "details": "RST output and debounced pushbutton reset input",
+      "source_pdf_page": 1
+    }
+  ],
+  "external_interfaces": [
+    {
+      "signal": "VCC",
+      "direction": "power input",
+      "function": "Primary supply; active supply when above switchover threshold",
+      "source_pdf_pages": [
+        1,
+        6
+      ]
+    },
+    {
+      "signal": "VBAT",
+      "direction": "power input",
+      "function": "Backup battery supply for timekeeping",
+      "source_pdf_pages": [
+        1,
+        6
+      ]
+    },
+    {
+      "signal": "GND",
+      "direction": "power return",
+      "function": "Ground reference",
+      "source_pdf_pages": [
+        1,
+        6
+      ]
+    },
+    {
+      "signal": "SCL",
+      "direction": "input",
+      "function": "I2C serial clock, up to 400 kHz",
+      "source_pdf_pages": [
+        1,
+        4,
+        6
+      ]
+    },
+    {
+      "signal": "SDA",
+      "direction": "bidirectional open-drain",
+      "function": "I2C serial data",
+      "source_pdf_pages": [
+        1,
+        4,
+        6
+      ]
+    },
+    {
+      "signal": "INT/SQW",
+      "direction": "open-drain output",
+      "function": "Alarm interrupt or programmable square wave",
+      "source_pdf_pages": [
+        1,
+        2,
+        6
+      ]
+    },
+    {
+      "signal": "32kHz",
+      "direction": "open-drain output",
+      "function": "32.768 kHz output",
+      "source_pdf_pages": [
+        1,
+        2,
+        6
+      ]
+    },
+    {
+      "signal": "RST",
+      "direction": "open-drain output and monitored input",
+      "function": "Power-fail reset output and debounced pushbutton reset input",
+      "source_pdf_pages": [
+        1,
+        2,
+        6
+      ]
+    },
+    {
+      "signal": "N.C.",
+      "direction": "not connected",
+      "function": "Multiple package pins shown as N.C.; exact pin numbering is not included in the supplied pages",
+      "source_pdf_page": 1
+    }
+  ],
+  "typical_operating_circuit": {
+    "source_pdf_page": 1,
+    "connections": [
+      "Host MCU connects to SCL, SDA and RST",
+      "SCL and SDA require pull-up resistors to VCC",
+      "Pull-up sizing is shown as RPU = tR / CB",
+      "INT/SQW and 32kHz outputs are shown with pull-ups to VCC",
+      "VBAT connects to a backup cell",
+      "RST can be connected to a pushbutton to ground",
+      "VCC is decoupled to ground"
+    ]
+  },
+  "absolute_maximum_ratings": [
+    {
+      "parameter": "Voltage on any pin relative to ground",
+      "minimum": -0.3,
+      "maximum": 6.0,
+      "unit": "V",
+      "source_pdf_page": 2
+    },
+    {
+      "parameter": "Junction-to-ambient thermal resistance",
+      "symbol": "theta_JA",
+      "value": 73,
+      "unit": "C/W",
+      "source_pdf_page": 2
+    },
+    {
+      "parameter": "Junction-to-case thermal resistance",
+      "symbol": "theta_JC",
+      "value": 23,
+      "unit": "C/W",
+      "source_pdf_page": 2
+    },
+    {
+      "parameter": "Operating temperature - DS3231S",
+      "minimum": 0,
+      "maximum": 70,
+      "unit": "C",
+      "source_pdf_page": 2
+    },
+    {
+      "parameter": "Operating temperature - DS3231SN",
+      "minimum": -40,
+      "maximum": 85,
+      "unit": "C",
+      "source_pdf_page": 2
+    },
+    {
+      "parameter": "Junction temperature",
+      "maximum": 125,
+      "unit": "C",
+      "source_pdf_page": 2
+    },
+    {
+      "parameter": "Storage temperature",
+      "minimum": -40,
+      "maximum": 85,
+      "unit": "C",
+      "source_pdf_page": 2
+    },
+    {
+      "parameter": "Lead temperature, soldering 10 seconds",
+      "maximum": 260,
+      "unit": "C",
+      "source_pdf_page": 2
+    },
+    {
+      "parameter": "Reflow temperature, two times maximum",
+      "maximum": 260,
+      "unit": "C",
+      "source_pdf_page": 2
+    }
+  ],
+  "recommended_operating_conditions": [
+    {
+      "parameter": "Supply voltage",
+      "symbol": "VCC",
+      "minimum": 2.3,
+      "typical": 3.3,
+      "maximum": 5.5,
+      "unit": "V",
+      "source_pdf_page": 2
+    },
+    {
+      "parameter": "Backup supply voltage",
+      "symbol": "VBAT",
+      "minimum": 2.3,
+      "typical": 3.0,
+      "maximum": 5.5,
+      "unit": "V",
+      "source_pdf_page": 2
+    },
+    {
+      "parameter": "Logic-1 input, SDA/SCL",
+      "symbol": "VIH",
+      "minimum_expression": "0.7 * VCC",
+      "maximum_expression": "VCC + 0.3",
+      "unit": "V",
+      "source_pdf_page": 2
+    },
+    {
+      "parameter": "Logic-0 input, SDA/SCL",
+      "symbol": "VIL",
+      "minimum": -0.3,
+      "maximum_expression": "0.3 * VCC",
+      "unit": "V",
+      "source_pdf_page": 2
+    }
+  ],
+  "electrical_characteristics": [
+    {
+      "category": "VCC supply",
+      "parameter": "Active supply current",
+      "symbol": "ICCA",
+      "conditions": "Notes 4 and 5; SCL clocking at 400 kHz",
+      "supply": "VCC = 3.63 V",
+      "maximum": 200,
+      "unit": "uA",
+      "source_pdf_page": 2
+    },
+    {
+      "category": "VCC supply",
+      "parameter": "Active supply current",
+      "symbol": "ICCA",
+      "conditions": "Notes 4 and 5; SCL clocking at 400 kHz",
+      "supply": "VCC = 5.5 V",
+      "maximum": 300,
+      "unit": "uA",
+      "source_pdf_page": 2
+    },
+    {
+      "category": "VCC supply",
+      "parameter": "Standby supply current",
+      "symbol": "ICCS",
+      "conditions": "I2C bus inactive; 32 kHz output on; SQW output off",
+      "supply": "VCC = 3.63 V",
+      "maximum": 110,
+      "unit": "uA",
+      "source_pdf_page": 2
+    },
+    {
+      "category": "VCC supply",
+      "parameter": "Standby supply current",
+      "symbol": "ICCS",
+      "conditions": "I2C bus inactive; 32 kHz output on; SQW output off",
+      "supply": "VCC = 5.5 V",
+      "maximum": 170,
+      "unit": "uA",
+      "source_pdf_page": 2
+    },
+    {
+      "category": "VCC supply",
+      "parameter": "Temperature conversion current",
+      "symbol": "ICCSCONV",
+      "conditions": "I2C bus inactive; 32 kHz output on; SQW output off",
+      "supply": "VCC = 3.63 V",
+      "maximum": 575,
+      "unit": "uA",
+      "source_pdf_page": 2
+    },
+    {
+      "category": "VCC supply",
+      "parameter": "Temperature conversion current",
+      "symbol": "ICCSCONV",
+      "conditions": "I2C bus inactive; 32 kHz output on; SQW output off",
+      "supply": "VCC = 5.5 V",
+      "maximum": 650,
+      "unit": "uA",
+      "source_pdf_page": 2
+    },
+    {
+      "category": "power fail",
+      "parameter": "Power-fail voltage",
+      "symbol": "VPF",
+      "minimum": 2.45,
+      "typical": 2.575,
+      "maximum": 2.7,
+      "unit": "V",
+      "source_pdf_page": 2
+    },
+    {
+      "category": "digital output",
+      "parameter": "Logic-0 output - 32kHz, INT/SQW, SDA",
+      "symbol": "VOL",
+      "conditions": "IOL = 3 mA",
+      "maximum": 0.4,
+      "unit": "V",
+      "source_pdf_page": 2
+    },
+    {
+      "category": "digital output",
+      "parameter": "Logic-0 output - RST",
+      "symbol": "VOL",
+      "conditions": "IOL = 1 mA",
+      "maximum": 0.4,
+      "unit": "V",
+      "source_pdf_page": 2
+    },
+    {
+      "category": "leakage",
+      "parameter": "Output leakage current - 32kHz, INT/SQW, SDA",
+      "symbol": "ILO",
+      "conditions": "Output high impedance",
+      "minimum": -1,
+      "typical": 0,
+      "maximum": 1,
+      "unit": "uA",
+      "source_pdf_page": 2
+    },
+    {
+      "category": "leakage",
+      "parameter": "Input leakage - SCL",
+      "symbol": "ILI",
+      "minimum": -1,
+      "maximum": 1,
+      "unit": "uA",
+      "source_pdf_page": 2
+    },
+    {
+      "category": "leakage",
+      "parameter": "RST pin I/O leakage",
+      "symbol": "IOL",
+      "conditions": "RST high impedance; Note 6",
+      "minimum": -200,
+      "maximum": 10,
+      "unit": "uA",
+      "source_pdf_page": 2
+    },
+    {
+      "category": "leakage",
+      "parameter": "VBAT leakage current with VCC active",
+      "symbol": "IBATLKG",
+      "typical": 25,
+      "maximum": 100,
+      "unit": "nA",
+      "source_pdf_page": 2
+    },
+    {
+      "category": "frequency",
+      "parameter": "Output frequency",
+      "symbol": "fOUT",
+      "conditions": "VCC = 3.3 V or VBAT = 3.3 V",
+      "typical": 32.768,
+      "unit": "kHz",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "frequency",
+      "parameter": "Frequency stability vs temperature - commercial",
+      "symbol": "delta_f/fOUT",
+      "conditions": "VCC or VBAT = 3.3 V; aging offset = 00h; 0 C to +40 C",
+      "maximum_absolute": 2.0,
+      "unit": "ppm",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "frequency",
+      "parameter": "Frequency stability vs temperature - commercial",
+      "symbol": "delta_f/fOUT",
+      "conditions": "VCC or VBAT = 3.3 V; aging offset = 00h; >+40 C to +70 C",
+      "maximum_absolute": 3.5,
+      "unit": "ppm",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "frequency",
+      "parameter": "Frequency stability vs temperature - industrial",
+      "symbol": "delta_f/fOUT",
+      "conditions": "VCC or VBAT = 3.3 V; aging offset = 00h; -40 C to <0 C",
+      "maximum_absolute": 3.5,
+      "unit": "ppm",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "frequency",
+      "parameter": "Frequency stability vs temperature - industrial",
+      "symbol": "delta_f/fOUT",
+      "conditions": "VCC or VBAT = 3.3 V; aging offset = 00h; 0 C to +40 C",
+      "maximum_absolute": 2.0,
+      "unit": "ppm",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "frequency",
+      "parameter": "Frequency stability vs temperature - industrial",
+      "symbol": "delta_f/fOUT",
+      "conditions": "VCC or VBAT = 3.3 V; aging offset = 00h; >+40 C to +85 C",
+      "maximum_absolute": 3.5,
+      "unit": "ppm",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "frequency",
+      "parameter": "Frequency stability vs voltage",
+      "symbol": "delta_f/V",
+      "typical": 1,
+      "unit": "ppm/V",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "frequency",
+      "parameter": "Trim register sensitivity per LSB",
+      "symbol": "delta_f/LSB",
+      "conditions": "-40 C",
+      "typical": 0.7,
+      "unit": "ppm",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "frequency",
+      "parameter": "Trim register sensitivity per LSB",
+      "symbol": "delta_f/LSB",
+      "conditions": "+25 C",
+      "typical": 0.1,
+      "unit": "ppm",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "frequency",
+      "parameter": "Trim register sensitivity per LSB",
+      "symbol": "delta_f/LSB",
+      "conditions": "+70 C",
+      "typical": 0.4,
+      "unit": "ppm",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "frequency",
+      "parameter": "Trim register sensitivity per LSB",
+      "symbol": "delta_f/LSB",
+      "conditions": "+85 C",
+      "typical": 0.8,
+      "unit": "ppm",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "temperature",
+      "parameter": "Temperature accuracy",
+      "symbol": "Temp",
+      "conditions": "VCC = 3.3 V or VBAT = 3.3 V",
+      "minimum": -3,
+      "maximum": 3,
+      "unit": "C",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "aging",
+      "parameter": "Crystal aging",
+      "symbol": "delta_f/fO",
+      "conditions": "After reflow; not production tested; first year",
+      "maximum_absolute": 1.0,
+      "unit": "ppm",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "aging",
+      "parameter": "Crystal aging",
+      "symbol": "delta_f/fO",
+      "conditions": "After reflow; not production tested; 0 to 10 years",
+      "maximum_absolute": 5.0,
+      "unit": "ppm",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "VBAT supply",
+      "parameter": "Active battery current",
+      "symbol": "IBATA",
+      "conditions": "EOSC=0; BBSQW=0; SCL=400 kHz",
+      "supply": "VBAT = 3.63 V",
+      "maximum": 70,
+      "unit": "uA",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "VBAT supply",
+      "parameter": "Active battery current",
+      "symbol": "IBATA",
+      "conditions": "EOSC=0; BBSQW=0; SCL=400 kHz",
+      "supply": "VBAT = 5.5 V",
+      "maximum": 150,
+      "unit": "uA",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "VBAT supply",
+      "parameter": "Timekeeping battery current",
+      "symbol": "IBATT",
+      "conditions": "EOSC=0; BBSQW=0; EN32kHz=1; SCL=SDA=0 V or VBAT",
+      "supply": "VBAT = 3.63 V",
+      "typical": 0.84,
+      "maximum": 3.0,
+      "unit": "uA",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "VBAT supply",
+      "parameter": "Timekeeping battery current",
+      "symbol": "IBATT",
+      "conditions": "EOSC=0; BBSQW=0; EN32kHz=1; SCL=SDA=0 V or VBAT",
+      "supply": "VBAT = 5.5 V",
+      "typical": 1.0,
+      "maximum": 3.5,
+      "unit": "uA",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "VBAT supply",
+      "parameter": "Temperature conversion current",
+      "symbol": "IBATTC",
+      "conditions": "EOSC=0; BBSQW=0; SCL=SDA=0 V or VBAT",
+      "supply": "VBAT = 3.63 V",
+      "maximum": 575,
+      "unit": "uA",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "VBAT supply",
+      "parameter": "Temperature conversion current",
+      "symbol": "IBATTC",
+      "conditions": "EOSC=0; BBSQW=0; SCL=SDA=0 V or VBAT",
+      "supply": "VBAT = 5.5 V",
+      "maximum": 650,
+      "unit": "uA",
+      "source_pdf_page": 3
+    },
+    {
+      "category": "VBAT supply",
+      "parameter": "Data-retention current",
+      "symbol": "IBATTDR",
+      "conditions": "EOSC=1; SCL=SDA=0 V; +25 C",
+      "maximum": 100,
+      "unit": "nA",
+      "source_pdf_page": 3
+    }
+  ],
+  "i2c_timing": {
+    "source_pdf_page": 4,
+    "diagram_signals": [
+      "SDA",
+      "SCL"
+    ],
+    "timing_parameters_detected": [
+      "tHD:STA",
+      "tLOW",
+      "tHIGH",
+      "tR",
+      "tF",
+      "tBUF",
+      "tHD:DAT",
+      "tSU:DAT",
+      "tSU:STA",
+      "tSU:STO",
+      "tSP"
+    ],
+    "bus_events_detected": [
+      "START",
+      "repeated START",
+      "STOP"
+    ],
+    "numeric_limits_available_in_supplied_pdf": false,
+    "notes": [
+      "Negative undershoot below -0.3 V in battery-backed mode may cause loss of data",
+      "Limits at -40 C are guaranteed by design and not production tested",
+      "All voltages are referenced to ground",
+      "SCL maximum active clocking frequency is 400 kHz",
+      "RST has an internal nominal 50 kohm pull-up resistor to VCC",
+      "SDA internal hold time must be at least 300 ns",
+      "Fast-mode use in a standard-mode system requires tSU:DAT >= 250 ns",
+      "CB is total capacitance of one bus line in pF"
+    ]
+  },
+  "typical_operating_characteristics": {
+    "source_pdf_page": 5,
+    "test_condition": "VCC = +3.3 V and TA = +25 C unless otherwise noted",
+    "charts": [
+      {
+        "title": "Standby supply current vs supply voltage",
+        "x_axis": "VCC (V)",
+        "y_axis": "ICCS (uA)",
+        "trend": "Current generally increases with VCC; a discontinuity is shown around the RST-active transition"
+      },
+      {
+        "title": "Supply current vs supply voltage",
+        "x_axis": "VBAT (V)",
+        "y_axis": "IBAT (uA)",
+        "trend": "Battery current increases with VBAT; EN32kHz=1 is higher than EN32kHz=0"
+      },
+      {
+        "title": "Supply current vs temperature",
+        "x_axis": "Temperature (C)",
+        "y_axis": "IBAT (uA)",
+        "trend": "Battery current rises with temperature"
+      },
+      {
+        "title": "Frequency deviation vs temperature vs aging value",
+        "x_axis": "Temperature (C)",
+        "y_axis": "Frequency deviation (ppm)",
+        "series": [
+          127,
+          32,
+          0,
+          -33,
+          -128
+        ],
+        "trend": "Aging register value shifts the frequency-deviation curves"
+      },
+      {
+        "title": "Delta time and frequency vs temperature",
+        "x_axis": "Temperature (C)",
+        "y_axes": [
+          "Delta frequency (ppm)",
+          "Delta time (minutes/year)"
+        ],
+        "trend": "DS3231 accuracy band is substantially narrower than an uncompensated crystal envelope"
+      }
+    ],
+    "digitized_curve_points": false
+  },
+  "functional_blocks": [
+    {
+      "id": "power_control",
+      "name": "Power Control",
+      "type": "power management",
+      "source_pdf_page": 6
+    },
+    {
+      "id": "oscillator",
+      "name": "Oscillator and Capacitor Array",
+      "type": "clock generation",
+      "source_pdf_page": 6
+    },
+    {
+      "id": "temperature_sensor",
+      "name": "Temperature Sensor",
+      "type": "sensor and compensation",
+      "source_pdf_page": 6
+    },
+    {
+      "id": "divider",
+      "name": "Control Logic / Divider",
+      "type": "clock control",
+      "source_pdf_page": 6
+    },
+    {
+      "id": "i2c",
+      "name": "I2C Interface and Address Register Decode",
+      "type": "serial interface",
+      "source_pdf_page": 6
+    },
+    {
+      "id": "control_registers",
+      "name": "Alarm, Status and Control Registers",
+      "type": "register bank",
+      "source_pdf_page": 6
+    },
+    {
+      "id": "clock_registers",
+      "name": "Clock and Calendar Registers",
+      "type": "register bank",
+      "source_pdf_page": 6
+    },
+    {
+      "id": "user_buffer",
+      "name": "User Buffer",
+      "type": "memory",
+      "capacity_bytes": 7,
+      "source_pdf_page": 6
+    },
+    {
+      "id": "output_control",
+      "name": "Square-Wave Buffer / INT-SQW Control",
+      "type": "output control",
+      "source_pdf_page": 6
+    },
+    {
+      "id": "reset",
+      "name": "Voltage Reference / Debounce / Pushbutton Reset",
+      "type": "reset and supervision",
+      "source_pdf_page": 6
+    }
+  ],
+  "relationships": [
+    {
+      "source": "VCC",
+      "relation": "feeds",
+      "target": "power_control",
+      "evidence": "Block diagram arrow",
+      "source_pdf_page": 6,
+      "confidence": "high"
+    },
+    {
+      "source": "VBAT",
+      "relation": "feeds",
+      "target": "power_control",
+      "evidence": "Block diagram arrow",
+      "source_pdf_page": 6,
+      "confidence": "high"
+    },
+    {
+      "source": "power_control",
+      "relation": "powers",
+      "target": "oscillator",
+      "evidence": "Block diagram arrow",
+      "source_pdf_page": 6,
+      "confidence": "high"
+    },
+    {
+      "source": "power_control",
+      "relation": "powers",
+      "target": "temperature_sensor",
+      "evidence": "Block diagram arrow",
+      "source_pdf_page": 6,
+      "confidence": "high"
+    },
+    {
+      "source": "power_control",
+      "relation": "powers",
+      "target": "i2c",
+      "evidence": "Block diagram arrow",
+      "source_pdf_page": 6,
+      "confidence": "high"
+    },
+    {
+      "source": "oscillator",
+      "relation": "exchanges clock/control",
+      "target": "divider",
+      "evidence": "Bidirectional arrow",
+      "source_pdf_page": 6,
+      "confidence": "high"
+    },
+    {
+      "source": "temperature_sensor",
+      "relation": "provides compensation input",
+      "target": "divider",
+      "evidence": "Upward arrow and TCXO function described in text",
+      "source_pdf_pages": [
+        1,
+        6
+      ],
+      "confidence": "high"
+    },
+    {
+      "source": "divider",
+      "relation": "provides 1 Hz tick",
+      "target": "clock_registers",
+      "evidence": "1 Hz label in block diagram and RTC behavior",
+      "source_pdf_pages": [
+        1,
+        6
+      ],
+      "confidence": "high"
+    },
+    {
+      "source": "divider",
+      "relation": "drives",
+      "target": "output_control",
+      "evidence": "Block diagram arrow",
+      "source_pdf_page": 6,
+      "confidence": "high"
+    },
+    {
+      "source": "i2c",
+      "relation": "reads and writes",
+      "target": "control_registers",
+      "evidence": "Block diagram connection and serial interface description",
+      "source_pdf_pages": [
+        1,
+        6
+      ],
+      "confidence": "high"
+    },
+    {
+      "source": "i2c",
+      "relation": "reads and writes",
+      "target": "clock_registers",
+      "evidence": "Block diagram connection and serial interface description",
+      "source_pdf_pages": [
+        1,
+        6
+      ],
+      "confidence": "high"
+    },
+    {
+      "source": "i2c",
+      "relation": "reads and writes",
+      "target": "user_buffer",
+      "evidence": "Block diagram connection",
+      "source_pdf_page": 6,
+      "confidence": "high"
+    },
+    {
+      "source": "control_registers",
+      "relation": "configures",
+      "target": "output_control",
+      "evidence": "Vertical block diagram connection",
+      "source_pdf_page": 6,
+      "confidence": "high"
+    },
+    {
+      "source": "output_control",
+      "relation": "drives",
+      "target": "INT/SQW",
+      "evidence": "Output arrow",
+      "source_pdf_page": 6,
+      "confidence": "high"
+    },
+    {
+      "source": "output_control",
+      "relation": "drives",
+      "target": "32kHz",
+      "evidence": "Output arrow",
+      "source_pdf_page": 6,
+      "confidence": "high"
+    },
+    {
+      "source": "reset",
+      "relation": "drives",
+      "target": "RST",
+      "evidence": "Output arrow",
+      "source_pdf_page": 6,
+      "confidence": "high"
+    }
+  ],
+  "normalization": {
+    "unit_policy": "ASCII canonical units in JSON; display units retained in Markdown",
+    "canonical_units": {
+      "microampere": "uA",
+      "nanoampere": "nA",
+      "degree_celsius": "C",
+      "kilohertz": "kHz",
+      "parts_per_million": "ppm"
+    },
+    "symbol_policy": "Symbols preserve datasheet meaning but use ASCII-safe delta_ prefixes where needed"
+  }
+}

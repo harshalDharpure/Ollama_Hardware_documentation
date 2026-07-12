@@ -1,0 +1,46 @@
+flowchart LR
+    HOST["Host MCU"]
+    BUS["I2C Bus"]
+    DEC["Address Decode and Bus Control"]
+
+    CTRL[("Control / Status / Alarm Registers")]
+    CLOCK[("Clock and Calendar Registers")]
+    USER[("7-Byte User Buffer")]
+
+    XTAL["Integrated 32.768 kHz Crystal Oscillator"]
+    TEMP["Temperature Measurement"]
+    DIV["Frequency Divider"]
+    ALARMCMP["Alarm Evaluation"]
+    OUTCTRL["Interrupt / Square-Wave Control"]
+    OUTPUTS["INT/SQW and 32 kHz Outputs"]
+    POWER["VCC / VBAT Power Selection"]
+    RESET["Power-Fail and Pushbutton Reset Logic"]
+
+    HOST -->|SCL and write transactions| BUS
+    BUS --> DEC
+    DEC -->|register writes| CTRL
+    DEC -->|time and date writes| CLOCK
+    DEC -->|buffer writes| USER
+
+    CTRL -->|status and configuration reads| DEC
+    CLOCK -->|current time and date reads| DEC
+    USER -->|stored bytes| DEC
+    DEC -->|SDA read data| BUS
+    BUS --> HOST
+
+    POWER --> XTAL
+    POWER --> TEMP
+    POWER --> DEC
+    XTAL --> DIV
+    TEMP -->|compensation data| DIV
+    DIV -->|1 Hz tick| CLOCK
+
+    CLOCK -->|current time| ALARMCMP
+    CTRL -->|alarm settings| ALARMCMP
+    ALARMCMP -->|alarm event| OUTCTRL
+    CTRL -->|output mode and enable bits| OUTCTRL
+    DIV -->|clock sources| OUTCTRL
+    OUTCTRL --> OUTPUTS
+
+    POWER --> RESET
+    RESET -->|RST assertion / release| HOST

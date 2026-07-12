@@ -19,6 +19,7 @@ def run_nsc_pipeline(
     figure: ExtractedFigure,
     work_dir: Path,
     yolo_weights: str | None = None,
+    datasheet_mode: bool = False,
 ) -> DiagramResult:
     work_dir.mkdir(parents=True, exist_ok=True)
     diagram_type = classify_diagram(figure)
@@ -39,7 +40,10 @@ def run_nsc_pipeline(
         work_dir / f"{figure.id}_connectivity.png",
     )
 
-    mermaid = generate_mermaid_from_diagram(client, labeled_path, labeled=True)
+    if datasheet_mode:
+        mermaid = 'graph TD\n    Debug["Internal NSC labels stored in diagram_work only"]'
+    else:
+        mermaid = generate_mermaid_from_diagram(client, labeled_path, labeled=True)
 
     nodes_added = [d.class_name + str(i) for i, d in enumerate(detections[:20])]
     edges_added: list[HDAEdge] = []
@@ -72,14 +76,17 @@ def process_figure(
     yolo_weights: str | None = None,
     dense_threshold: int = 40,
     agentic_fn=None,
+    datasheet_mode: bool = False,
 ) -> DiagramResult:
     diagram_type = classify_diagram(figure, dense_threshold)
+
+    if datasheet_mode:
+        return run_nsc_pipeline(client, figure, work_dir, yolo_weights, datasheet_mode=True)
 
     if diagram_type == DiagramType.DENSE_COMPLEX and agentic_fn:
         return agentic_fn(client, figure, work_dir)
 
     if diagram_type in (DiagramType.SCHEMATIC, DiagramType.BLOCK_DIAGRAM, DiagramType.DENSE_COMPLEX):
-        return run_nsc_pipeline(client, figure, work_dir, yolo_weights)
+        return run_nsc_pipeline(client, figure, work_dir, yolo_weights, datasheet_mode=False)
 
-    # Fallback for OTHER: still try NSC lightly
-    return run_nsc_pipeline(client, figure, work_dir, yolo_weights)
+    return run_nsc_pipeline(client, figure, work_dir, yolo_weights, datasheet_mode=False)

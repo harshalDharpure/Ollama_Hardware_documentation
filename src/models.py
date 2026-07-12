@@ -133,6 +133,64 @@ class KnowledgeGraph(BaseModel):
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
+class BoundingBox(BaseModel):
+    x1: int = 0
+    y1: int = 0
+    x2: int = 0
+    y2: int = 0
+
+    @property
+    def center(self) -> tuple[float, float]:
+        return ((self.x1 + self.x2) / 2, (self.y1 + self.y2) / 2)
+
+    @property
+    def width(self) -> int:
+        return max(0, self.x2 - self.x1)
+
+    @property
+    def height(self) -> int:
+        return max(0, self.y2 - self.y1)
+
+
+class TextInstance(BaseModel):
+    text: str
+    bbox: BoundingBox
+    confidence: float = 0.0
+    source: str = "ocr"
+
+
+class SymbolInstance(BaseModel):
+    id: str
+    name: str
+    symbol_type: str = "component"  # component | junction | pin | text_anchor
+    bbox: BoundingBox
+    confidence: float = 0.0
+    value: str = ""
+    pins: list[str] = Field(default_factory=list)
+
+
+class NetEdge(BaseModel):
+    source_id: str
+    target_id: str
+    net_name: str = ""
+    relationship: str = "connects"
+    spatial_weight: float = 1.0
+    evidence: str = ""
+
+
+class SpatialNetlist(BaseModel):
+    figure_id: str = ""
+    page: int = 0
+    symbols: list[SymbolInstance] = Field(default_factory=list)
+    texts: list[TextInstance] = Field(default_factory=list)
+    nets: list[NetEdge] = Field(default_factory=list)
+    confidence: float = 0.0
+    pipeline: str = "omnish"
+    mermaid_architecture: str = ""
+    mermaid_dataflow: str = ""
+    mermaid_dependency: str = ""
+
+
 class DiagramResult(BaseModel):
     figure_id: str
     diagram_type: DiagramType
@@ -143,6 +201,7 @@ class DiagramResult(BaseModel):
     edges_added: list[HDAEdge] = Field(default_factory=list)
     pipeline_used: str = "nsc"
     confidence: float = 0.0
+    spatial_netlist: SpatialNetlist | None = None
 
 
 class QualityReport(BaseModel):
@@ -158,6 +217,58 @@ class QualityReport(BaseModel):
     conflicts: list[str] = Field(default_factory=list)
 
 
+class NormalizedParameterRow(BaseModel):
+    category: str = ""
+    parameter: str = ""
+    symbol: str = ""
+    conditions: str = ""
+    supply: str = ""
+    minimum: str = ""
+    typical: str = ""
+    maximum: str = ""
+    unit: str = ""
+    original_unit: str = ""
+    source_pdf_page: int = 0
+    section: str = ""
+
+
+class BlockComponent(BaseModel):
+    id: str
+    name: str
+    type: str = "block"
+
+
+class ExternalSignal(BaseModel):
+    name: str
+    direction: str = ""
+    function: str = ""
+
+
+class BlockRelationship(BaseModel):
+    source: str
+    target: str
+    relationship: str = ""
+    evidence: str = ""
+    confidence: str = "medium"
+    source_pdf_page: int = 0
+
+
+class BlockDiagramWarning(BaseModel):
+    type: str = ""
+    relationship: str = ""
+    action: str = ""
+
+
+class BlockDiagramEvidence(BaseModel):
+    page: int = 0
+    figure_id: str = ""
+    components: list[BlockComponent] = Field(default_factory=list)
+    external_signals: list[ExternalSignal] = Field(default_factory=list)
+    relationships: list[BlockRelationship] = Field(default_factory=list)
+    warnings: list[BlockDiagramWarning] = Field(default_factory=list)
+    confidence: float = 0.0
+
+
 class PipelineResult(BaseModel):
     document: DocumentBundle
     plan: ImplementationPlan
@@ -170,3 +281,11 @@ class PipelineResult(BaseModel):
     diagram_results: list[DiagramResult] = Field(default_factory=list)
     quality: QualityReport = Field(default_factory=QualityReport)
     export_dir: str = ""
+    structured_specification: str = ""
+    canonical_spec: dict[str, Any] = Field(default_factory=dict)
+    extraction_report: dict[str, Any] = Field(default_factory=dict)
+    relationships_csv: str = ""
+    electrical_characteristics_csv: str = ""
+    block_diagram_evidence: list[BlockDiagramEvidence] = Field(default_factory=list)
+    spatial_netlists: list[SpatialNetlist] = Field(default_factory=list)
+    normalized_parameters: list[NormalizedParameterRow] = Field(default_factory=list)

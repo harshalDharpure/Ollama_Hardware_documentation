@@ -1,0 +1,17 @@
+source,relation,target,evidence,source_pdf_page,source_pdf_pages,confidence
+VCC,feeds,power_control,Block diagram arrow,6,,high
+VBAT,feeds,power_control,Block diagram arrow,6,,high
+power_control,powers,oscillator,Block diagram arrow,6,,high
+power_control,powers,temperature_sensor,Block diagram arrow,6,,high
+power_control,powers,i2c,Block diagram arrow,6,,high
+oscillator,exchanges clock/control,divider,Bidirectional arrow,6,,high
+temperature_sensor,provides compensation input,divider,Upward arrow and TCXO function described in text,,"1,6",high
+divider,provides 1 Hz tick,clock_registers,1 Hz label in block diagram and RTC behavior,,"1,6",high
+divider,drives,output_control,Block diagram arrow,6,,high
+i2c,reads and writes,control_registers,Block diagram connection and serial interface description,,"1,6",high
+i2c,reads and writes,clock_registers,Block diagram connection and serial interface description,,"1,6",high
+i2c,reads and writes,user_buffer,Block diagram connection,6,,high
+control_registers,configures,output_control,Vertical block diagram connection,6,,high
+output_control,drives,INT/SQW,Output arrow,6,,high
+output_control,drives,32kHz,Output arrow,6,,high
+reset,drives,RST,Output arrow,6,,high

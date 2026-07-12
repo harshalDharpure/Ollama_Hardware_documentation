@@ -9,6 +9,7 @@ from pathlib import Path
 import cv2
 
 from src.diagram.mermaid_from_diagram import extract_mermaid, generate_mermaid_from_diagram
+from src.output.mermaid_sanitizer import sanitize_mermaid
 from src.diagram.yolo_detector import detect_elements
 from src.graph.schema import sanitize_id
 from src.llm.ollama_client import OllamaClient
@@ -125,4 +126,4 @@ def _build_mermaid_from_symbols(symbols: dict[str, str], connections: list[tuple
         lines.append(f"    {sanitize_id(a)} --> {sanitize_id(b)}")
     if len(lines) == 1:
         lines.append('    Empty["No connectivity extracted"]')
-    return "\n".join(lines)
+    return sanitize_mermaid("\n".join(lines))

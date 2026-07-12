@@ -1,0 +1,50 @@
+flowchart LR
+    subgraph BOARD["Host board"]
+        MCU["Microcontroller / Host"]
+        VCCSRC["Main supply"]
+        BAT["Backup battery"]
+        PULLUPS["I2C and output pull-ups"]
+        BUTTON["Pushbutton reset"]
+    end
+
+    subgraph CHIP["DS3231 RTC / TCXO"]
+        POWER["Power Control"]
+        OSC["Integrated Crystal Oscillator\nand Capacitor Array"]
+        TEMP["Temperature Sensor"]
+        DIV["Control Logic / Divider"]
+        I2C["I2C Interface and\nAddress Register Decode"]
+        CTRL["Alarm, Status and\nControl Registers"]
+        CAL["Clock and Calendar Registers"]
+        BUF["User Buffer - 7 Bytes"]
+        SQW["Square-Wave Buffer /\nINT-SQW Control"]
+        RESET["Voltage Reference / Debounce /\nPushbutton Reset"]
+    end
+
+    VCCSRC -->|VCC| POWER
+    BAT -->|VBAT| POWER
+    POWER --> OSC
+    POWER --> TEMP
+    POWER --> I2C
+
+    OSC <--> DIV
+    TEMP -->|temperature compensation| DIV
+    DIV -->|1 Hz time base| CAL
+    DIV --> SQW
+
+    MCU -->|SCL| I2C
+    MCU <-->|SDA| I2C
+    PULLUPS --> MCU
+    PULLUPS --> I2C
+
+    I2C <--> CTRL
+    I2C <--> CAL
+    I2C <--> BUF
+    TEMP --> CTRL
+    CTRL --> SQW
+
+    SQW -->|32 kHz| MCU
+    SQW -->|INT/SQW| MCU
+
+    VCCSRC --> RESET
+    BUTTON --> RESET
+    RESET -->|RST| MCU

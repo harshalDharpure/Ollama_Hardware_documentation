@@ -1,0 +1,68 @@
+{
+  "document_id": "DS3231",
+  "processing_mode": "manually verified hackathon reference output",
+  "source_file": "ds3231.pdf",
+  "pages_processed": 6,
+  "sections_detected": [
+    "General Description",
+    "Benefits and Features",
+    "Applications",
+    "Typical Operating Circuit",
+    "Absolute Maximum Ratings",
+    "Recommended Operating Conditions",
+    "Electrical Characteristics",
+    "Data Transfer on I2C Serial Bus",
+    "Typical Operating Characteristics",
+    "Block Diagram"
+  ],
+  "tables_detected": 4,
+  "charts_detected": 5,
+  "diagram_types_detected": [
+    "typical operating circuit",
+    "I2C timing diagram",
+    "functional block diagram"
+  ],
+  "quality": {
+    "narrative_text": {
+      "status": "high confidence",
+      "basis": "clear machine-readable text and visual verification"
+    },
+    "table_structure": {
+      "status": "high confidence",
+      "basis": "rows and merged conditions manually checked against rendered pages"
+    },
+    "block_components": {
+      "status": "high confidence",
+      "basis": "block labels and external interfaces visually verified"
+    },
+    "block_relationships": {
+      "status": "medium-high confidence",
+      "basis": "arrow directions verified; one 1 Hz relationship also supported by functional text"
+    },
+    "chart_metadata": {
+      "status": "medium confidence",
+      "basis": "titles, axes, legends and qualitative trends captured; curves not digitized"
+    },
+    "i2c_numeric_timing": {
+      "status": "not available",
+      "basis": "timing diagram is present but the numeric timing-characteristics table is not included in the uploaded extract"
+    }
+  },
+  "warnings": [
+    "The uploaded PDF is a selected extract. Printed datasheet pages 4 and 5 are absent.",
+    "Exact package pin numbering and ordering information are not present in the supplied pages.",
+    "Typical-characteristic graph curves were summarized qualitatively; no numeric curve digitization was performed.",
+    "I2C timing parameter labels were extracted, but numeric limits are unavailable in this extract.",
+    "N.C. package pins are represented generically because the pin-configuration page is missing."
+  ],
+  "deliverables": [
+    "structured_specification.md",
+    "canonical_spec.json",
+    "architecture.mmd",
+    "data_flow.mmd",
+    "dependency_graph.mmd",
+    "electrical_characteristics.csv",
+    "relationships.csv",
+    "extraction_report.json"
+  ]
+}

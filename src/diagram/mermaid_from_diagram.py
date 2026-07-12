@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 
 from src.llm.ollama_client import OllamaClient
+from src.output.mermaid_sanitizer import sanitize_mermaid
 
 
 MERMAID_UNLABELED_PROMPT = """You are an expert of electrical and hardware block diagrams.
@@ -29,7 +30,7 @@ def generate_mermaid_from_diagram(
     prompt = MERMAID_LABELED_PROMPT if labeled else MERMAID_UNLABELED_PROMPT
     try:
         raw = client.chat_vision(prompt, image_path)
-        return extract_mermaid(raw)
+        return sanitize_mermaid(extract_mermaid(raw))
     except Exception as exc:
         return f"graph TD\n    Error[\"Diagram parse failed: {exc}\"]"
 
@@ -47,4 +48,4 @@ def extract_mermaid(text: str) -> str:
             break
     if not text.startswith(("graph", "flowchart")):
         text = "graph TD\n" + text
-    return text
+    return sanitize_mermaid(text)
